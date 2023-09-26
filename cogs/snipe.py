@@ -2,8 +2,9 @@ import os
 from disnake.ext import commands
 import disnake
 from datetime import datetime
-import json
 import numpy as np
+import openpyxl
+from openpyxl import load_workbook
 
 
 class SnipeCommand(commands.Cog):
@@ -26,15 +27,10 @@ class SnipeCommand(commands.Cog):
             await inter.response.send_message("F*** you, I'm immortal!")
             return
         else:
-            # Updates counter of sniped or not.
-            write_countUp(sniper, target)
-
-            # Add this event to the LargeLogs.txt
-            with open(os.getcwd() + "\\snipeCounts\\LargeLogs.txt", "a") as file:
-                file.write("\n")
-                file.write(sniper.nick + "(" + str(sniper.id) + ") --->> " + target.nick + "( " + str(target.id) + "), " + datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+            count_and_log(sniper, target)
 
             await inter.response.send_message(sniper.mention + " snip snopped " + target.mention + "!!")
+
             return
 
 
@@ -43,50 +39,55 @@ def setup(bot: commands.Bot):
     bot.add_cog(SnipeCommand(bot))
 
 
-# function to add to JSON
-def write_countUp(sniper, target):
+# function to update body counts
+def count_and_log(sniper, target):
     """Documents the logistics that comes with a snipe: Increase sniper's hits by 1 and increases the target's
     been_hit by 1. Increases total snipes by 1.
 
-    Logistics are presented in a nested dictionary, saved in a json file, CountedUp.json."""
+    Logistics are presented in spreadsheet file and edited with openpyxl."""
 
-    # Fetches sniper and target index
-    addTarget = False
-    addSniper = False
-    with open(os.getcwd() + "\\snipeCounts\\CountedUp.json", 'r+') as file:
-        count = json.load(file)  # Loads the json file into python
+    workbook = load_workbook(filename="snipeCounts/SnipeCount.xlsx")
+    countsheet = workbook["counts"]
+    logsheet = workbook["log"]
 
-        # Adds a new user to the roster if they don't exist yet and assigns them a number
-        if str(sniper.id) not in count["roster"]:
-            addSniper = True
-            indexSniper = count["TOTALPPL"]
-            count["roster"][sniper.id] = {"Index": indexSniper, "Name": sniper.nick}
-            count["TOTALPPL"] += 1
-        else:
-            indexSniper = count["roster"][str(sniper.id)]["Index"]
+    # Logs the snipe
+    logsheet.insert_rows(idx=2)
+    logsheet["A2"] = sniper.nick
+    logsheet["B2"] = str(sniper.id)
+    logsheet["C2"] = target.nick
+    logsheet["D2"] = str(target.id)
+    logsheet["E2"] = datetime.now().strftime("%d/%m/%Y")
+    logsheet["F2"] = datetime.now().strftime("%H:%M:%S")
 
-        if str(target.id) not in count["roster"]:
-            addTarget = True
-            indexTarget = count["TOTALPPL"]
-            count["roster"][target.id] = {"Index": indexTarget, "Name": target.nick}
-            count["TOTALPPL"] += 1
-        else:
-            indexTarget = count["roster"][str(target.id)]["Index"]
+    # Update total
+    logsheet["H1"] = logsheet.max_row-1
 
-        # Edit the array
-        array = np.array(count["Array"])
+    # seeing if a person exists
+    targetExists = False
+    sniperExists = False
 
-        if addSniper:
-            array = np.lib.pad(array, ((1, 0), (1, 0)))
-        if addTarget:
-            array = np.lib.pad(array, ((1, 0), (1, 0)))
+    # counts up each person's counts
+    for cell in countsheet["B"]:
+        if cell.value == target.id:
+            i = int(countsheet[cell.row][3].value)
+            thiscell = countsheet.cell(row=cell.row, column=3)
+            thiscell = str(i + 1)
+            targetExists = True
 
-        array[indexSniper][indexTarget] += 1
-        count["Array"] = array.tolist()
+        if cell.value == sniper.id:
+            i = int(countsheet[cell.row][2].value)
+            thiscell = countsheet.cell(row=cell.row, column=2)
+            thiscell = str(i + 1)
+            sniperExists = True
 
-        # Sets file's current position at offset.
-        file.seek(0)
-        # convert back to json.
-        json.dump(count, file, indent=4)
-        file.close()
-        return
+    if targetExists == False:
+        countsheet.append([target.nick, str(target.id), '0', '1'])
+
+    if sniperExists == False:
+        countsheet.append([sniper.nick, str(sniper.id), '1', '0'])
+
+    # Save and close worksheet
+    workbook.save(filename="snipeCounts/SnipeCount.xlsx")
+    workbook.close()
+
+    return
