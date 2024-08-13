@@ -1,6 +1,6 @@
 The Assorted Aces Bot- SnipeBot
 
-Keeps track of the Assorted Ace's snipes, keeping count of who shot who, who was shot, who shot, and whatever. Logistics
+Originally made to keeps track of the Assorted Ace's snipes, keeping count of who shot who, who was shot, who shot, and whatever. Logistics
 are saved as different files within the folder 'snipeCounts.' Code for each type of command are .py files inside of
 the 'cogs' folder.
 
@@ -28,9 +28,10 @@ Other functionalities to add, maybe:
 1. Fetch command that return the person who has the most snipes.
 2. Fetch command that return the person who has been sniped the most.
 3. Command that nulls a snipe
-    - Within ~10 min of the snipe, certain people may decide whether the snipe is valid. The
+    - Within ~10 min of the snipe, certain people may decide whether the snipe is valid.
     - The trigger would perhaps be a response, or an emoji react on the bot.
     - Perhaps a voting system?
 4. Rename the commands and log keys/values into something more recognizable and less confusing.
 5. Fix the error where a snipe log <sniper>, <target>, <datetime> is added to three files. 2 in the main directory and
 the correct one in the snipeCounts folder.
+6. Instead of a spreasheet, create simple html webpage that displays results
