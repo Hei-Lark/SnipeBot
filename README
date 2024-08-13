@@ -23,15 +23,3 @@ counter, and adds an entry to the LargeLogs.txt.
         Returns the number of times @user has been sniped by another member of the club.
     c. /fetchtarget @user
         Return the number of times the user has sniped @user
-
-Other functionalities to add, maybe:
-1. Fetch command that return the person who has the most snipes.
-2. Fetch command that return the person who has been sniped the most.
-3. Command that nulls a snipe
-    - Within ~10 min of the snipe, certain people may decide whether the snipe is valid.
-    - The trigger would perhaps be a response, or an emoji react on the bot.
-    - Perhaps a voting system?
-4. Rename the commands and log keys/values into something more recognizable and less confusing.
-5. Fix the error where a snipe log <sniper>, <target>, <datetime> is added to three files. 2 in the main directory and
-the correct one in the snipeCounts folder.
-6. Instead of a spreasheet, create simple html webpage that displays results
