@@ -6,11 +6,9 @@ import disnake
 from disnake.ext import commands
 
 load_dotenv()  # Take environment variables from .env.
-TOKEN = os.getenv('DISCORD_TOKEN')
-GUILD = os.getenv('DISCORD_GUILD')
-TEST = os.getenv('TEST_GUILDS')
+TOKEN = os.getenv('TOKEN')
 
-bot = commands.Bot(test_guilds=[TEST])
+bot = commands.Bot()
 
 @bot.event
 async def on_ready():

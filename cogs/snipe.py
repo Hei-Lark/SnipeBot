@@ -2,8 +2,7 @@ import os
 from disnake.ext import commands
 import disnake
 from datetime import datetime
-import numpy as np
-import openpyxl
+import json
 from openpyxl import load_workbook
 
 
@@ -23,14 +22,12 @@ class SnipeCommand(commands.Cog):
             await inter.response.send_message("You can't snipe yourself, silly!")
             return
         # When someone tries to snipe the bot
-        elif target.id == 999533372659486820:
-            await inter.response.send_message("F*** you, I'm immortal!")
+        elif target.id == commands.bot.id:
+            await inter.response.send_message("I'm just a bot :,[")
             return
         else:
             count_and_log(sniper, target)
-
-            await inter.response.send_message(sniper.mention + " snip snopped " + target.mention + "!!")
-
+            await inter.response.send_message(sniper.mention + " sniped " + target.mention + "!")
             return
 
 
@@ -44,50 +41,23 @@ def count_and_log(sniper, target):
     """Documents the logistics that comes with a snipe: Increase sniper's hits by 1 and increases the target's
     been_hit by 1. Increases total snipes by 1.
 
-    Logistics are presented in spreadsheet file and edited with openpyxl."""
+    Logistics are recorded in a JSON file, each person with a list [snipes, deaths]"""
+    
+    # update count
+    f = open('snipeCount.json', 'r')
+    data = json.load(f)
+    data[sniper.id]['snipes'] += 1
+    data[target.id]['deaths'] += 1
 
-    workbook = load_workbook(filename="snipeCounts/SnipeCount.xlsx")
-    countsheet = workbook["counts"]
-    logsheet = workbook["log"]
+    f.open('snipeCount.json', 'w')
+    json.dump(data, f)
 
-    # Logs the snipe
-    logsheet.insert_rows(idx=2)
-    logsheet["A2"] = sniper.nick
-    logsheet["B2"] = str(sniper.id)
-    logsheet["C2"] = target.nick
-    logsheet["D2"] = str(target.id)
-    logsheet["E2"] = datetime.now().strftime("%d/%m/%Y")
-    logsheet["F2"] = datetime.now().strftime("%H:%M:%S")
+    f = open('file.json', 'r')
+    json.load(f)
 
-    # Update total
-    logsheet["H1"] = logsheet.max_row-1
+    #log
+    f = open('snipelog.txt')
+    data = json.load(f)
 
-    # seeing if a person exists
-    targetExists = False
-    sniperExists = False
-
-    # counts up each person's counts
-    for cell in countsheet["B"]:
-        if cell.value == target.id:
-            i = int(countsheet[cell.row][3].value)
-            thiscell = countsheet.cell(row=cell.row, column=3)
-            thiscell = str(i + 1)
-            targetExists = True
-
-        if cell.value == sniper.id:
-            i = int(countsheet[cell.row][2].value)
-            thiscell = countsheet.cell(row=cell.row, column=2)
-            thiscell = str(i + 1)
-            sniperExists = True
-
-    if targetExists == False:
-        countsheet.append([target.nick, str(target.id), '0', '1'])
-
-    if sniperExists == False:
-        countsheet.append([sniper.nick, str(sniper.id), '1', '0'])
-
-    # Save and close worksheet
-    workbook.save(filename="snipeCounts/SnipeCount.xlsx")
-    workbook.close()
-
+    f.close()
     return
