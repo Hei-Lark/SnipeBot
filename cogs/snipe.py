@@ -1,10 +1,7 @@
-import os
 from disnake.ext import commands
 import disnake
-from datetime import datetime
 import json
 from openpyxl import load_workbook
-
 
 class SnipeCommand(commands.Cog):
     """This will be for the snipe command."""
@@ -22,7 +19,7 @@ class SnipeCommand(commands.Cog):
             await inter.response.send_message("You can't snipe yourself, silly!")
             return
         # When someone tries to snipe the bot
-        elif target.id == commands.bot.id:
+        elif target == commands.Bot:
             await inter.response.send_message("I'm just a bot :,[")
             return
         else:
@@ -44,20 +41,28 @@ def count_and_log(sniper, target):
     Logistics are recorded in a JSON file, each person with a list [snipes, deaths]"""
     
     # update count
-    f = open('snipeCount.json', 'r')
+    f = open('cogs/snipeCount.json', 'r')
     data = json.load(f)
-    data[sniper.id]['snipes'] += 1
-    data[target.id]['deaths'] += 1
 
-    f.open('snipeCount.json', 'w')
+    # update target death count
+    if str(target.id) in data:
+        data[str(target.id)]['deaths'] += 1
+    else:
+        f = open('cogs/snipeCount.json', 'a')
+        data.update({target.id:{'snipes':0,'deaths':1}})
+
+    # update sniper snipe count
+    if str(sniper.id) in data:
+        data[str(sniper.id)]['snipes'] += 1
+    else:
+        f = open('cogs/snipeCount.json', 'a')
+        data.update({sniper.id:{'snipes':1,'deaths':0}})
+
+    f = open('cogs/snipeCount.json', 'w')
     json.dump(data, f)
 
-    f = open('file.json', 'r')
+    f = open('cogs/snipeCount.json', 'r')
     json.load(f)
-
-    #log
-    f = open('snipelog.txt')
-    data = json.load(f)
 
     f.close()
     return

@@ -2,6 +2,7 @@ from disnake.ext import commands
 import disnake
 import json
 from openpyxl import load_workbook
+import admin
 
 
 class FetchCommand(commands.Cog):
@@ -11,22 +12,69 @@ class FetchCommand(commands.Cog):
         self.bot = bot
 
     @commands.slash_command(description="Return how many times this person has sniped another person.")
-    async def fetchbodycount(inter, member: disnake.Member):
-        f = open('snipeCount.json', 'r')
+    async def fetchsnipes(inter, member: disnake.Member):
+        f = open('cogs/snipeCount.json', 'r')
         data = json.load(f)
+        snipes = data[str(member.id)]['snipes']
+        print(str(snipes))
+
+        if(str(member.id) in data):
+            await inter.response.send_message(member.mention + " has " + str(data[str(member.id)]['deaths']) + " snipes!")
+        else:
+            await inter.response.send_message(member.mention + " has sniped 0 times!")
+        
         f.close()
-        await inter.response.send_message(member.nick + " has sniped " + data[member.id]['snipes'] + " times!")
         return
 
-    @commands.slash_command(description="Returned how many times this person has been sniped.")
+    @commands.slash_command(description="Returned how many times this person has been sniped (deaths).")
     async def fetchdeaths(inter, member: disnake.Member):
-        workbook = load_workbook(filename="snipeCounts/SnipeCount.xlsx")
-        countsheet = workbook["counts"]
-
-        f = open('snipeCount.json', 'r')
+        f = open('cogs/snipeCount.json', 'r')
         data = json.load(f)
+
+        if (str(member.id) in data):
+            await inter.response.send_message(member.mention + " has " + str(data[str(member.id)]['deaths']) + " deaths!")
+        else:
+            await inter.response.send_message(member.mention + " has been sniped 0 times!")
+        
         f.close()
-        await inter.response.send_message(member.nick + " has been sniped " + data[member.id]['deaths'] + " times!")
+        return
+    
+    @commands.slash_command(description="Returned how many times this person has been sniped (deaths) and sniped others.")
+    async def fetchstats(inter, member: disnake.Member):
+        f = open('cogs/snipeCount.json', 'r')
+        data = json.load(f)
+
+        if (str(member.id) in data):
+            await inter.response.send_message(member.mention + " has " + str(data[str(member.id)]['snipes']) + " snipes and " + str(data[str(member.id)]['deaths']) + " deaths!")
+        else:
+            await inter.response.send_message(member.mention + " has 0 snipes and deaths!")
+        
+        f.close()
+        return
+    
+    @commands.slash_command(description="Returns list of top three snipers and their scores")
+    async def fetchleaderboard(inter):
+        admin.updateLeaderboard()
+
+        f = open('cogs/leaderboard.json', 'r')
+        data = json.load(f)
+
+        first = "1. (" + str(data["first"]["score"]) + " ) "
+        second = "2. (" + str(data["second"]["score"]) + " ) "
+        third = "3. (" + str(data["third"]["score"]) + " ) "
+
+        # given list of member IDs, 
+        for id in data["first"]["members"]:
+            first += commands.Bot.get_user(id).mention + " "
+
+        for id in data["second"]["members"]:
+            second += commands.Bot.get_user(id).mention + " "
+
+        for id in data["third"]["members"]:
+            third += commands.Bot.get_user(id).mention + " "
+        
+        f.close()
+        await inter.response.send_message(first + "\n" + second + "\n" + third)
         return
 
 
