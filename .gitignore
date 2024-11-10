@@ -1,5 +1,5 @@
-_pycache_
+__pycache__
 .idea
-cogs/_pycache_
+cogs/__pycache__
 cogs/logs/
 .env
