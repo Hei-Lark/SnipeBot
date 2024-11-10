@@ -2,7 +2,8 @@ import json
 
 
 def reset():
-    json.dump({}, 'snipeCount.json')
+    open('src/logs/snipeCount.json', 'w').close()
+    open('src/logs/leaderboard.json', 'w').close()
 
 def updateLeaderboard():
         b = open('src/logs/leaderboard.json', 'r')
@@ -47,4 +48,3 @@ def updateLeaderboard():
         b = open('src/logs/leaderboard.json', 'r')
         json.load(b)
         return
-

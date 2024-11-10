@@ -25,4 +25,5 @@ counter, and adds an entry to the LargeLogs.txt.
         Return the number of times the user has sniped @user
 
 ## Currently Work in Progress
-administrative commands such as leaderboards and clearing the logs.
+1. Administrative commands such as leaderboards and clearing the logs. Not discord bot commands
+2. I regret switching to json. I want xml back
