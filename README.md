@@ -1,4 +1,4 @@
-The Assorted Aces Bot- SnipeBot
+## The Assorted Aces Bot- SnipeBot
 
 Originally made to keeps track of the Assorted Ace's snipes, keeping count of who shot who, who was shot, who shot, and whatever. Logistics
 are saved as different files within the folder 'snipeCounts.' Code for each type of command are .py files inside of
@@ -8,7 +8,7 @@ File CountedUp.json keeps the nested dictionaries of each member's member id, hi
 TOTAL snipes are also in there. The LargeLogs.txt is a massive log file saving the information of each snipe in the
 format: <sniper>, <target>, <datetime>. These logs will be kept until edited manually by someone with the permissions.
 
---The Commands--
+## The Commands
 
 1. The snipe commands: /snipe @user
     Only 1 command in this, used in the snipe channel.
@@ -23,3 +23,6 @@ counter, and adds an entry to the LargeLogs.txt.
         Returns the number of times @user has been sniped by another member of the club.
     c. /fetchtarget @user
         Return the number of times the user has sniped @user
+
+## Currently Work in Progress
+administrative commands such as leaderboards and clearing the logs.
