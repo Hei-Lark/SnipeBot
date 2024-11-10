@@ -1,5 +1,8 @@
-__pycache__
-.idea
-cogs/__pycache__
-cogs/logs/
+__pycache__/
+.idea/
+cogs/
+src/logs/
 .env
+
+*.pyc
+*.pyo

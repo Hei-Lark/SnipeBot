@@ -5,10 +5,10 @@ def reset():
     json.dump({}, 'snipeCount.json')
 
 def updateLeaderboard():
-        b = open('cogs/leaderboard.json', 'r')
+        b = open('src/logs/leaderboard.json', 'r')
         board = json.load(b)
 
-        f = open('cogs/snipeCount.json', 'r')
+        f = open('src/logs/snipeCount.json', 'r')
         data = json.load(f)
 
         scores = [board["first"]["score"], board["second"]["score"], board["third"]["score"]]
@@ -40,11 +40,11 @@ def updateLeaderboard():
 
                 board["third"]["score"] = data[str(i)]["snipes"]
 
-        b = open('cogs/leaderboard.json', 'w')
+        b = open('src/logs/leaderboard.json', 'w')
         print(board)
         json.dump(board, b)
 
-        b = open('cogs/leaderboard.json', 'r')
+        b = open('src/logs/leaderboard.json', 'r')
         json.load(b)
         return
 

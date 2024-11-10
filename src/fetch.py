@@ -13,7 +13,7 @@ class FetchCommand(commands.Cog):
 
     @commands.slash_command(description="Return how many times this person has sniped another person.")
     async def fetchsnipes(inter, member: disnake.Member):
-        f = open('cogs/logs/snipeCount.json', 'r')
+        f = open('logs/snipeCount.json', 'r')
         data = json.load(f)
         snipes = data[str(member.id)]['snipes']
         print(str(snipes))
@@ -28,7 +28,7 @@ class FetchCommand(commands.Cog):
 
     @commands.slash_command(description="Returned how many times this person has been sniped (deaths).")
     async def fetchdeaths(inter, member: disnake.Member):
-        f = open('cogs/logs/snipeCount.json', 'r')
+        f = open('logs/snipeCount.json', 'r')
         data = json.load(f)
 
         if (str(member.id) in data):
@@ -41,7 +41,7 @@ class FetchCommand(commands.Cog):
     
     @commands.slash_command(description="Returned how many times this person has been sniped (deaths) and sniped others.")
     async def fetchstats(inter, member: disnake.Member):
-        f = open('cogs/logs/snipeCount.json', 'r')
+        f = open('logs/snipeCount.json', 'r')
         data = json.load(f)
 
         if (str(member.id) in data):
@@ -56,7 +56,7 @@ class FetchCommand(commands.Cog):
     async def fetchleaderboard(inter):
         admin.updateLeaderboard()
 
-        f = open('cogs/logs/leaderboard.json', 'r')
+        f = open('logs/leaderboard.json', 'r')
         data = json.load(f)
 
         first = "1. (" + str(data["first"]["score"]) + " ) "

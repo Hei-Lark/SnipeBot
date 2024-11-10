@@ -41,27 +41,27 @@ def count_and_log(sniper, target):
     Logistics are recorded in a JSON file, each person with a list [snipes, deaths]"""
     
     # update count
-    f = open('cogs/snipeCount.json', 'r')
+    f = open('logs/snipeCount.json', 'r')
     data = json.load(f)
 
     # update target death count
     if str(target.id) in data:
         data[str(target.id)]['deaths'] += 1
     else:
-        f = open('cogs/snipeCount.json', 'a')
+        f = open('logs/snipeCount.json', 'a')
         data.update({target.id:{'snipes':0,'deaths':1}})
 
     # update sniper snipe count
     if str(sniper.id) in data:
         data[str(sniper.id)]['snipes'] += 1
     else:
-        f = open('cogs/snipeCount.json', 'a')
+        f = open('logs/snipeCount.json', 'a')
         data.update({sniper.id:{'snipes':1,'deaths':0}})
 
-    f = open('cogs/snipeCount.json', 'w')
+    f = open('logs/snipeCount.json', 'w')
     json.dump(data, f)
 
-    f = open('cogs/snipeCount.json', 'r')
+    f = open('logs/snipeCount.json', 'r')
     json.load(f)
 
     f.close()
